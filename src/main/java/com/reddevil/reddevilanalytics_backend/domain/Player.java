@@ -6,45 +6,41 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "teams")
+@Table(name = "players")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Team {
+public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "short_name", length = 100)
-    private String shortName;
+    @Column(name = "first_name", length = 100)
+    private String firstName;
 
-    @Column(length = 10)
-    private String tla;
+    @Column(name = "last_name", length = 100)
+    private String lastName;
 
-    @Column(name = "logo_url", length = 500)
-    private String logoUrl;
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
-    private String stadium;
+    @Column(length = 100)
+    private String nationality;
 
-    private String venue;
+    @Column(length = 50)
+    private String position;
 
-    @Column(length = 500)
-    private String address;
-
-    private String website;
-
-    private Integer founded;
-
-    @Column(name = "club_colors", length = 100)
-    private String clubColors;
+    @Column(name = "shirt_number")
+    private Integer shirtNumber;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -63,4 +59,3 @@ public class Team {
         updatedAt = LocalDateTime.now();
     }
 }
-

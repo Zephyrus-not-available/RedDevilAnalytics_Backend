@@ -1,0 +1,187 @@
+spring:
+  application:
+    name: reddevil-analytics-backend
+  
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/reddevil_analytics}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 20000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 60000
+  
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000 # 1 hour default
+  
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# API Provider Configuration
+providers:
+  api-football:
+    base-url: https://api-football-v1.p.rapidapi.com/v3
+    api-key: ${API_FOOTBALL_KEY:}
+    daily-quota: 100
+    enabled: ${API_FOOTBALL_ENABLED:true}
+  
+  football-data:
+    base-url: https://api.football-data.org/v4
+    api-key: ${FOOTBALL_DATA_KEY:}
+    rate-limit: 10 # per minute
+    enabled: ${FOOTBALL_DATA_ENABLED:true}
+  
+  thesportsdb:
+    base-url: https://www.thesportsdb.com/api/v1/json
+    api-key: ${THESPORTSDB_KEY:3}
+    enabled: ${THESPORTSDB_ENABLED:true}
+  
+  ai-service:
+    base-url: ${AI_SERVICE_URL:http://localhost:8001}
+    enabled: ${AI_SERVICE_ENABLED:false}
+
+# Resilience4j Circuit Breaker Configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+    instances:
+      apiFootball:
+        baseConfig: default
+        waitDurationInOpenState: 60s
+      footballData:
+        baseConfig: default
+      theSportsDB:
+        baseConfig: default
+      aiService:
+        baseConfig: default
+        failureRateThreshold: 60
+  
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+    instances:
+      apiFootball:
+        baseConfig: default
+        maxAttempts: 2
+      footballData:
+        baseConfig: default
+      theSportsDB:
+        baseConfig: default
+
+# Management and Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
+    redis:
+      enabled: true
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+  compression:
+    enabled: true
+
+# CORS Configuration
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
+  allowed-headers: "*"
+  allow-credentials: true
+
+# Security
+security:
+  admin:
+    api-key: ${ADMIN_API_KEY:admin-secret-key}
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.reddevil: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Application-specific configuration
+app:
+  scheduling:
+    fixtures-sync-cron: "0 0 2 * * ?" # 2 AM daily
+    standings-sync-cron: "0 */30 * * * ?" # Every 30 minutes
+    live-poll-interval: 30000 # 30 seconds
+    assets-refresh-cron: "0 0 3 * * SUN" # Weekly on Sunday 3 AM
+  
+  cache:
+    ttl:
+      standings: 1800000 # 30 minutes
+      fixtures: 3600000 # 1 hour
+      live-snapshot: 30000 # 30 seconds
+      team-assets: 604800000 # 7 days
+      player-assets: 604800000 # 7 days
+      next-match: 300000 # 5 minutes
+  
+  teams:
+    target-team-id: 33 # Manchester United ID in API-Football
+    target-team-name: "Manchester United"
+  
+  competitions:
+    premier-league-id: 2021 # Football-Data.org ID
+    europa-league-id: 2146
+    fa-cup-id: 2055

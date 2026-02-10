@@ -10,41 +10,27 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "teams")
+@Table(name = "competitions")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Team {
+public class Competition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "short_name", length = 100)
-    private String shortName;
+    @Column(length = 50)
+    private String code;
 
-    @Column(length = 10)
-    private String tla;
+    @Column(length = 50)
+    private String type;
 
-    @Column(name = "logo_url", length = 500)
-    private String logoUrl;
-
-    private String stadium;
-
-    private String venue;
-
-    @Column(length = 500)
-    private String address;
-
-    private String website;
-
-    private Integer founded;
-
-    @Column(name = "club_colors", length = 100)
-    private String clubColors;
+    @Column(name = "emblem_url", length = 500)
+    private String emblemUrl;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -63,4 +49,3 @@ public class Team {
         updatedAt = LocalDateTime.now();
     }
 }
-

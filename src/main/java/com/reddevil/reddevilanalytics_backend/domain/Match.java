@@ -1,17 +1,19 @@
 package com.reddevil.reddevilanalytics_backend.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
+@Data
 @Entity
 @Table(name = "matches")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Match {
 
     @Id
@@ -19,18 +21,28 @@ public class Match {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "home_team_id")
+    @JoinColumn(name = "home_team_id", nullable = false)
     private Team homeTeam;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "away_team_id")
+    @JoinColumn(name = "away_team_id", nullable = false)
     private Team awayTeam;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @ManyToOne
+    @JoinColumn(name = "competition_id")
+    private Competition competition;
 
-    @Column(nullable = false)
-    private String competition;
+    @ManyToOne
+    @JoinColumn(name = "season_id")
+    private Season season;
+
+    @Column(name = "match_date", nullable = false)
+    private LocalDateTime matchDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    @Builder.Default
+    private MatchStatus status = MatchStatus.SCHEDULED;
 
     @Column(name = "home_score")
     private Integer homeScore;
@@ -38,68 +50,32 @@ public class Match {
     @Column(name = "away_score")
     private Integer awayScore;
 
-    protected Match() {
+    private String venue;
+
+    private String referee;
+
+    private Integer attendance;
+
+    @Column(length = 50)
+    private String round;
+
+    private Integer matchday;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
-    public Match(Team homeTeam, Team awayTeam, LocalDate date, String competition, Integer homeScore, Integer awayScore) {
-        this.homeTeam = homeTeam;
-        this.awayTeam = awayTeam;
-        this.date = date;
-        this.competition = competition;
-        this.homeScore = homeScore;
-        this.awayScore = awayScore;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Team getHomeTeam() {
-        return homeTeam;
-    }
-
-    public Team getAwayTeam() {
-        return awayTeam;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public String getCompetition() {
-        return competition;
-    }
-
-    public Integer getHomeScore() {
-        return homeScore;
-    }
-
-    public Integer getAwayScore() {
-        return awayScore;
-    }
-
-    public void setHomeTeam(Team homeTeam) {
-        this.homeTeam = homeTeam;
-    }
-
-    public void setAwayTeam(Team awayTeam) {
-        this.awayTeam = awayTeam;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setCompetition(String competition) {
-        this.competition = competition;
-    }
-
-    public void setHomeScore(Integer homeScore) {
-        this.homeScore = homeScore;
-    }
-
-    public void setAwayScore(Integer awayScore) {
-        this.awayScore = awayScore;
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }
 
