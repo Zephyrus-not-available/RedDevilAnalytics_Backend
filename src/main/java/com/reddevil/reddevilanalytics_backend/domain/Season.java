@@ -6,45 +6,33 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "teams")
+@Table(name = "seasons")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Team {
+public class Season {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(name = "short_name", length = 100)
-    private String shortName;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-    @Column(length = 10)
-    private String tla;
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
 
-    @Column(name = "logo_url", length = 500)
-    private String logoUrl;
-
-    private String stadium;
-
-    private String venue;
-
-    @Column(length = 500)
-    private String address;
-
-    private String website;
-
-    private Integer founded;
-
-    @Column(name = "club_colors", length = 100)
-    private String clubColors;
+    @Column(name = "is_current")
+    @Builder.Default
+    private Boolean isCurrent = false;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -63,4 +51,3 @@ public class Team {
         updatedAt = LocalDateTime.now();
     }
 }
-

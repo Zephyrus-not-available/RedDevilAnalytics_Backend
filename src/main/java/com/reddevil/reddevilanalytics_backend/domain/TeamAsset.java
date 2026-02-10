@@ -10,51 +10,37 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "teams")
+@Table(name = "team_assets", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_team_asset", columnNames = {"team_id", "provider"})
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Team {
+public class TeamAsset {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
-
-    @Column(name = "short_name", length = 100)
-    private String shortName;
-
-    @Column(length = 10)
-    private String tla;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
 
     @Column(name = "logo_url", length = 500)
     private String logoUrl;
 
-    private String stadium;
+    @Column(name = "banner_url", length = 500)
+    private String bannerUrl;
 
-    private String venue;
-
-    @Column(length = 500)
-    private String address;
-
-    private String website;
-
-    private Integer founded;
-
-    @Column(name = "club_colors", length = 100)
-    private String clubColors;
-
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private Provider provider;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
 
@@ -63,4 +49,3 @@ public class Team {
         updatedAt = LocalDateTime.now();
     }
 }
-
