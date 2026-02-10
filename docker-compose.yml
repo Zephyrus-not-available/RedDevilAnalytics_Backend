@@ -1,5 +1,11 @@
 version: '3.8'
 
+# IMPORTANT: Before starting, create a .env file with your API keys:
+# - API_FOOTBALL_KEY=your_key
+# - FOOTBALL_DATA_KEY=your_key
+# - ADMIN_API_KEY=your_secure_key
+# See .env.example for complete configuration options.
+
 services:
   # PostgreSQL Database
   postgres:
@@ -68,16 +74,16 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: ""
       
-      # API Keys (Replace with your actual keys)
-      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY:-your_api_key}
-      FOOTBALL_DATA_KEY: ${FOOTBALL_DATA_KEY:-your_api_key}
+      # API Keys (Set these in your environment or .env file)
+      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY}
+      FOOTBALL_DATA_KEY: ${FOOTBALL_DATA_KEY}
       THESPORTSDB_KEY: ${THESPORTSDB_KEY:-3}
       
       # CORS Configuration
       CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:5173
       
-      # Admin API Key
-      ADMIN_API_KEY: ${ADMIN_API_KEY:-admin-secret-key}
+      # Admin API Key (Set this in your environment or .env file)
+      ADMIN_API_KEY: ${ADMIN_API_KEY}
     ports:
       - "8080:8080"
     volumes:

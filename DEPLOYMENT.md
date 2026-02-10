@@ -410,8 +410,9 @@ scrape_configs:
 ```
 
 2. **Import Grafana dashboard:**
-- Use Spring Boot 2.1+ dashboard (ID: 11378)
-- Or create custom dashboards
+- Search for dashboards compatible with Spring Boot 3.x/4.x
+- Or create custom dashboards for your specific metrics
+- Popular dashboard IDs: 19004 (Spring Boot 3), 4701 (JVM Micrometer)
 
 ### ELK Stack
 

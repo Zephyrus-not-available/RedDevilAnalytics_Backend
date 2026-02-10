@@ -328,7 +328,7 @@ open http://localhost:8081
 # Using redis-cli
 redis-cli
 > KEYS *
-> GET standings:2021:2024
+> GET standings:2021:2023
 
 # Or use Redis Commander
 open http://localhost:8082
