@@ -208,7 +208,6 @@ public class FootballDataClient implements FixtureProviderClient, StandingsProvi
                 .homeScore(homeScore)
                 .awayScore(awayScore)
                 .venue(match.venue())
-                .referee(null)
                 .build();
     }
 
@@ -244,7 +243,6 @@ public class FootballDataClient implements FixtureProviderClient, StandingsProvi
                 .name(team.name())
                 .shortName(team.shortName() != null ? team.shortName() : team.tla())
                 .logoUrl(team.crest())
-                .stadium(null)
                 .build();
     }
 
