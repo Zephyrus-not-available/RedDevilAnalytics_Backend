@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  
+  flyway:
+    enabled: false
+  
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+providers:
+  api-football:
+    enabled: false
+  football-data:
+    enabled: false
+  thesportsdb:
+    enabled: false
+  ai-service:
+    enabled: false
