@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+/**
+ * API-Football response models.
+ * Contains record classes representing the JSON response structures from API-Football API endpoints.
+ * These models are used for deserializing API responses before mapping to normalized DTOs.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 record FixturesResponse(
         List<FixtureItem> response

@@ -256,8 +256,8 @@ public class ApiFootballClient implements LiveMatchProviderClient, FixtureProvid
     }
 
     private void logQuotaUsage(String operation) {
-        int remainingQuota = rateLimitManager.getRemainingQuota(RateLimitManager.Provider.API_FOOTBALL);
         rateLimitManager.recordRequest(RateLimitManager.Provider.API_FOOTBALL);
+        int remainingQuota = rateLimitManager.getRemainingQuota(RateLimitManager.Provider.API_FOOTBALL);
         
         log.info("API-Football request completed - operation: {}, remaining quota: {}/{}", 
                 operation, remainingQuota, dailyQuota);
