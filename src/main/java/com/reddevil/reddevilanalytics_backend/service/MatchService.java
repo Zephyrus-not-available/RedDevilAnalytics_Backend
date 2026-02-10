@@ -8,8 +8,8 @@ import com.reddevil.reddevilanalytics_backend.provider.dto.LiveMatchDTO;
 import com.reddevil.reddevilanalytics_backend.repository.CompetitionRepository;
 import com.reddevil.reddevilanalytics_backend.repository.MatchRepository;
 import com.reddevil.reddevilanalytics_backend.repository.SeasonRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MatchService {
 
     private final MatchRepository matchRepository;
@@ -30,6 +29,21 @@ public class MatchService {
     private final ExternalRefService externalRefService;
     private final FixtureProviderClient fixtureProviderClient;
     private final LiveMatchProviderClient liveMatchProviderClient;
+
+    public MatchService(
+            MatchRepository matchRepository,
+            CompetitionRepository competitionRepository,
+            SeasonRepository seasonRepository,
+            ExternalRefService externalRefService,
+            @Qualifier("footballDataClient") FixtureProviderClient fixtureProviderClient,
+            @Qualifier("apiFootballClient") LiveMatchProviderClient liveMatchProviderClient) {
+        this.matchRepository = matchRepository;
+        this.competitionRepository = competitionRepository;
+        this.seasonRepository = seasonRepository;
+        this.externalRefService = externalRefService;
+        this.fixtureProviderClient = fixtureProviderClient;
+        this.liveMatchProviderClient = liveMatchProviderClient;
+    }
 
     @Cacheable(value = "nextMatch", key = "#teamId + '_' + #seasonId")
     @Transactional(readOnly = true)
