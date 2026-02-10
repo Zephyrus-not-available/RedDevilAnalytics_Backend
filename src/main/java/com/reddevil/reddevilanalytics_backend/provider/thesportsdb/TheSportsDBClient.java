@@ -44,7 +44,7 @@ public class TheSportsDBClient implements AssetProviderClient {
 
     @Override
     @CircuitBreaker(name = "theSportsDB")
-    @Cacheable(value = "team-assets", key = "#teamName")
+    @Cacheable(value = "teamAssets", key = "#teamName")
     public AssetDTO getTeamAssets(String teamName) {
         if (!enabled) {
             log.warn("TheSportsDB provider is disabled");
@@ -82,7 +82,6 @@ public class TheSportsDBClient implements AssetProviderClient {
             return AssetDTO.builder()
                     .logoUrl(teamData.strTeamBadge())
                     .bannerUrl(teamData.strTeamBanner())
-                    .photoUrl(teamData.strTeamLogo())
                     .build();
                     
         } catch (Exception e) {
@@ -93,7 +92,7 @@ public class TheSportsDBClient implements AssetProviderClient {
 
     @Override
     @CircuitBreaker(name = "theSportsDB")
-    @Cacheable(value = "player-assets", key = "#playerName")
+    @Cacheable(value = "playerAssets", key = "#playerName")
     public AssetDTO getPlayerAssets(String playerName) {
         if (!enabled) {
             log.warn("TheSportsDB provider is disabled");
